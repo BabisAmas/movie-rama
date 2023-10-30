@@ -1,0 +1,71 @@
+# ----- Java and Maven -----
+*.class
+*.log
+*.war
+
+# Maven folder
+/target/
+
+# ----- Angular -----
+# dependencies
+/node_modules/
+/dist/
+
+# IDE files
+.idea/
+*.iml
+*.swp
+*.swo
+
+# ----- Docker -----
+# Docker ignore files
+docker-compose*.yml
+Dockerfile
+
+# ----- IDEs and Editors -----
+# IntelliJ IDEA
+*.iws
+*.iml
+*.ipr
+.idea/
+
+# Eclipse
+.classpath
+.project
+.settings/
+*.sublime-workspace
+
+# Visual Studio Code
+.vscode/
+
+# ----- Operating Systems -----
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# ----- Others -----
+# Log files
+*.log
+
+# Compiled files
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Package files
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Temp files
+*.tmp
+*.temp
+*.swp
