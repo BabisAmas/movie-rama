@@ -17,11 +17,6 @@
 *.swp
 *.swo
 
-# ----- Docker -----
-# Docker ignore files
-docker-compose*.yml
-Dockerfile
-
 # ----- IDEs and Editors -----
 # IntelliJ IDEA
 *.iws
