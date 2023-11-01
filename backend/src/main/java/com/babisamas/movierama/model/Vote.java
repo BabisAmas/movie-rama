@@ -29,6 +29,3 @@ public class Vote {
     }
 }
 
-enum VoteType {
-    LIKE, HATE
-}
