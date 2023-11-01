@@ -23,6 +23,10 @@ public class Vote {
     @ManyToOne
     @JoinColumn(name = "movie_id")
     private Movie movie;
+
+    public boolean isLike() {
+        return VoteType.LIKE.equals(type);
+    }
 }
 
 enum VoteType {
