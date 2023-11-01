@@ -1,7 +1,8 @@
 package com.babisamas.movierama.controller;
 
-import com.babisamas.movierama.model.Movie;
+import com.babisamas.movierama.dto.MovieDTO;
 import com.babisamas.movierama.service.MovieService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,13 +21,13 @@ public class MovieController {
     }
 
     @PostMapping
-    public ResponseEntity<Movie> addMovie(@RequestBody Movie movie) {
-        Movie newMovie = movieService.addMovie(movie);
+    public ResponseEntity<MovieDTO> addMovie(@RequestBody @Valid MovieDTO movie) {
+        MovieDTO newMovie = movieService.addMovie(movie);
         return new ResponseEntity<>(newMovie, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<Movie>> getAllMovies() {
+    public ResponseEntity<List<MovieDTO>> getAllMovies() {
         return new ResponseEntity<>(movieService.getAllMovies(), HttpStatus.OK);
     }
 }
