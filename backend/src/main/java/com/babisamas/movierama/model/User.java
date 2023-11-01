@@ -51,4 +51,8 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Vote> votes = new ArrayList<>();
+
+    public String getFullName() {
+        return firstname + " " + lastname;
+    }
 }
