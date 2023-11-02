@@ -4,6 +4,7 @@ import com.babisamas.movierama.dto.MovieDTO;
 import com.babisamas.movierama.model.Movie;
 import com.babisamas.movierama.model.Vote;
 import com.babisamas.movierama.repository.MovieRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
@@ -30,6 +31,11 @@ public class MovieService {
 
     public List<MovieDTO> getAllMovies() {
         return movieRepository.findAll().stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
+    public Movie getMovieById(Long movieId) {
+        return movieRepository.findById(movieId)
+                .orElseThrow(() -> new EntityNotFoundException("Movie not found with id: " + movieId));
     }
 
     private Movie convertToEntity(MovieDTO movieDTO) {
