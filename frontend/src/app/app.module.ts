@@ -8,6 +8,7 @@ import { MovieListComponent } from './components/movie-list/movie-list.component
 import { MovieCardComponent } from './components/movie-card/movie-card.component';
 import { SortComponent } from './components/sort/sort.component';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { UserProfileComponent } from './components/user-profile/user-profile.com
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    NgbModule
   ],
   providers: [],
   bootstrap: [AppComponent]
