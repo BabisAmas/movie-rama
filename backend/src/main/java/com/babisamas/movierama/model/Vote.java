@@ -28,4 +28,3 @@ public class Vote {
         return VoteType.LIKE.equals(type);
     }
 }
-
