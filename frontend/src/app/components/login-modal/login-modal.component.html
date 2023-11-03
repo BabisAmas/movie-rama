@@ -1,0 +1,21 @@
+<div class="overlay">
+  <div class="login-box">
+    <div class="login-header">
+      <h5>Login</h5>
+      <button type="button" class="close-btn" (click)="closeModal()">
+        &times;
+      </button>
+    </div>
+    <form (submit)="onSubmit()">
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" class="form-control" id="email" [(ngModel)]="user.email" name="email" required />
+      </div>
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" class="form-control" id="password" [(ngModel)]="user.password" name="password" required />
+      </div>
+      <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+  </div>
+</div>

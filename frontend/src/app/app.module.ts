@@ -9,6 +9,8 @@ import { MovieCardComponent } from './components/movie-card/movie-card.component
 import { SortComponent } from './components/sort/sort.component';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { LoginModalComponent } from './components/login-modal/login-modal.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -17,12 +19,14 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     MovieListComponent,
     MovieCardComponent,
     SortComponent,
-    UserProfileComponent
+    UserProfileComponent,
+    LoginModalComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    NgbModule
+    NgbModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

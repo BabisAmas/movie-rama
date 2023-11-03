@@ -3,9 +3,11 @@
     <div class="header-content">
       <h1 class="logo">MovieRama</h1>
       <div class="buttons">
-        <button class="btn btn-primary">Log in</button>
+        <button class="btn btn-primary" (click)="toggleModal()">Log in</button>
         <button class="btn btn-secondary">Sign up</button>
       </div>
     </div>
   </div>
 </header>
+
+<app-login-modal *ngIf="showModal" (closeModalEvent)="toggleModal()"></app-login-modal>
