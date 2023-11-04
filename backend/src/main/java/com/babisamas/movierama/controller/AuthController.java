@@ -4,6 +4,7 @@ import com.babisamas.movierama.dto.AuthenticationRequestDTO;
 import com.babisamas.movierama.dto.AuthenticationResponseDTO;
 import com.babisamas.movierama.security.CustomUserDetailsService;
 import com.babisamas.movierama.security.JwtUtil;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,7 +30,7 @@ public class AuthController {
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponseDTO> createAuthenticationToken(@RequestBody AuthenticationRequestDTO authenticationRequestDTO) {
+    public ResponseEntity<AuthenticationResponseDTO> createAuthenticationToken(@Valid @RequestBody AuthenticationRequestDTO authenticationRequestDTO) {
 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
