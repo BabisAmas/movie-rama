@@ -1,15 +1,16 @@
 package com.babisamas.movierama.controller;
 
+import com.babisamas.movierama.config.SecurityConfig;
 import com.babisamas.movierama.dto.AuthenticationRequestDTO;
 import com.babisamas.movierama.security.CustomUserDetailsService;
+import com.babisamas.movierama.security.JwtAuthenticationEntryPoint;
 import com.babisamas.movierama.security.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -17,41 +18,39 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.hasItem;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(AuthController.class)
+@Import({SecurityConfig.class})
 class AuthControllerTest {
 
+    @Autowired
     private MockMvc mockMvc;
-    private ObjectMapper objectMapper;
 
-    @Mock
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    @MockBean
     private AuthenticationManager authenticationManager;
 
-    @Mock
+    @MockBean
     private JwtUtil jwtTokenUtil;
 
-    @Mock
+    @MockBean
     private CustomUserDetailsService userDetailsService;
 
-    @InjectMocks
-    private AuthController authController;
-
-    @BeforeEach
-    public void setup() {
-        mockMvc = MockMvcBuilders.standaloneSetup(authController).build();
-        objectMapper = new ObjectMapper();
-    }
+    @MockBean
+    private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Test
     void whenValidCredentials_thenReturnsJwt() throws Exception {
@@ -65,31 +64,73 @@ class AuthControllerTest {
         mockMvc.perform(post("/authenticate")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(authenticationRequestDTO)))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.jwt").value(expectedToken));
     }
 
     @Test
-    void whenAuthenticateWithInvalidCredentials_thenThrowsException() {
-        String invalidUsername = "wrong_user";
-        String invalidPassword = "wrong_password";
-        AuthenticationRequestDTO authenticationRequest = new AuthenticationRequestDTO(invalidUsername, invalidPassword);
+    void whenRequestMissingFields_thenReturnsBadRequest() throws Exception {
+        AuthenticationRequestDTO authenticationRequestDTO = new AuthenticationRequestDTO("", "");
 
-        when(authenticationManager.authenticate(any())).thenThrow(new BadCredentialsException("Bad credentials"));
-
-        assertThrows(BadCredentialsException.class, () -> authController.createAuthenticationToken(authenticationRequest));
+        mockMvc.perform(post("/authenticate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(authenticationRequestDTO)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
-    void whenUserDoesNotExist_thenThrowsException() {
-        String username = "non_existing_user";
-        when(userDetailsService.loadUserByUsername(username))
+    void whenRequestHasInvalidDataFormat_thenReturnsBadRequest() throws Exception {
+        String invalidJson = "invalid JSON format";
+
+        mockMvc.perform(post("/authenticate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(invalidJson))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void whenBlankPassword_thenReturnsBadRequest() throws Exception {
+        mockMvc.perform(post("/authenticate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"username\":\"validUser\",\"password\":\"\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors[*]", hasItem(containsString("Password cannot be blank"))));
+    }
+
+    @Test
+    void whenBlankUsername_thenReturnsBadRequest() throws Exception {
+        mockMvc.perform(post("/authenticate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"username\":\"\",\"password\":\"validPassword\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errors[*]", hasItem(containsString("Username cannot be blank"))));
+    }
+
+    @Test
+    void whenBadCredentials_thenReturnsUnauthorized() throws Exception {
+        AuthenticationRequestDTO authenticationRequestDTO = new AuthenticationRequestDTO("user", "wrongpassword");
+
+        when(authenticationManager.authenticate(any()))
+                .thenThrow(new BadCredentialsException("Bad credentials"));
+
+        mockMvc.perform(post("/authenticate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(authenticationRequestDTO)))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message").value("Authentication failed"));
+    }
+
+    @Test
+    void whenUserNotFound_thenReturnsServerErrorOrCorrectErrorCode() throws Exception {
+        AuthenticationRequestDTO authenticationRequestDTO = new AuthenticationRequestDTO("nonexistentUser", "password");
+
+        when(userDetailsService.loadUserByUsername("nonexistentUser"))
                 .thenThrow(new UsernameNotFoundException("User not found"));
 
-        AuthenticationRequestDTO authenticationRequestDTO = new AuthenticationRequestDTO();
-        authenticationRequestDTO.setUsername(username);
-        authenticationRequestDTO.setPassword("anyPassword");
-
-        assertThrows(UsernameNotFoundException.class, () -> authController.createAuthenticationToken(authenticationRequestDTO));
+        mockMvc.perform(post("/authenticate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(authenticationRequestDTO)))
+                .andExpect(status().isNotFound());
     }
 }
