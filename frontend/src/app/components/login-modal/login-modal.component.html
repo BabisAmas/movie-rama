@@ -1,21 +1,13 @@
-<div class="overlay">
-  <div class="login-box">
-    <div class="login-header">
-      <h5>Login</h5>
-      <button type="button" class="close-btn" (click)="closeModal()">
-        &times;
-      </button>
+<p-dialog header="Login" [(visible)]="display" [modal]="true" [closable]="true" [dismissableMask]="false">
+  <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+    <div class="p-field">
+      <label for="username">Username</label>
+      <input id="username" type="text" pInputText formControlName="username" autofocus>
     </div>
-    <form (submit)="onSubmit()">
-      <div class="form-group">
-        <label for="email">Email:</label>
-        <input type="email" class="form-control" id="email" [(ngModel)]="user.email" name="email" required />
-      </div>
-      <div class="form-group">
-        <label for="password">Password:</label>
-        <input type="password" class="form-control" id="password" [(ngModel)]="user.password" name="password" required />
-      </div>
-      <button type="submit" class="btn btn-primary">Login</button>
-    </form>
-  </div>
-</div>
+    <div class="p-field">
+      <label for="password">Password</label>
+      <input id="password" type="password" pInputText formControlName="password">
+    </div>
+    <button pButton type="submit" label="Login" [disabled]="!loginForm.valid"></button>
+  </form>
+</p-dialog>

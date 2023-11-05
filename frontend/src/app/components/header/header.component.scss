@@ -1,24 +1,22 @@
-.header {
-    background-color: #f8f9fa;
-    padding: 10px 0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .logo {
-    font-size: 24px;
-    font-weight: bold;
+  .header-title {
+    color: #1976d2;
+    font-size: 1.5rem;
     margin: 0;
-    color: #333;
+    padding: 0 10px;
+    line-height: 48px;
+    font-weight: bold;
+    cursor: pointer;
   }
-  
-  .buttons {
-    display: flex;
-    gap: 10px;
+
+  .header-title:hover {
+    text-decoration: underline;
   }
-  
+
+  .ui-button-rounded {
+    border-radius: 8px;
+  }
+
+  .ui-button-spaced {
+    margin-left: 5px;
+    margin-right: 5px;
+  }

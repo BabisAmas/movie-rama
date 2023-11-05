@@ -1,13 +1,12 @@
-<header class="header">
-  <div class="container">
-    <div class="header-content">
-      <h1 class="logo">MovieRama</h1>
-      <div class="buttons">
-        <button class="btn btn-primary" (click)="toggleModal()">Log in</button>
-        <button class="btn btn-secondary">Sign up</button>
-      </div>
-    </div>
+<p-toolbar>
+  <div class="p-toolbar-group-left">
+    <h1 class="header-title">MovieRama</h1>
   </div>
-</header>
+  <div class="p-toolbar-group-right">
+    <button *ngIf="!isLoggedIn" pButton type="button" label="Log in" class="ui-button-rounded ui-button-spaced" (click)="toggleModal()"></button>
+    <button *ngIf="!isLoggedIn" pButton type="button" label="Sign up" class="ui-button-rounded ui-button-spaced" (click)="toggleModal()"></button>
+    <button *ngIf="isLoggedIn" pButton type="button" label="Logout" class="ui-button-rounded ui-button-spaced" (click)="logout()"></button>
+  </div>
+</p-toolbar>
 
 <app-login-modal *ngIf="showModal" (closeModalEvent)="toggleModal()"></app-login-modal>
