@@ -1,4 +1,4 @@
-<p-dialog header="Login" [(visible)]="display" [modal]="true" [closable]="true" [dismissableMask]="false">
+ <p-dialog header="Login" [(visible)]="display" [modal]="true" [draggable]="false" [closable]="true" [dismissableMask]="false" [resizable]="false">
   <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
     <div class="p-field">
       <label for="username">Username</label>
