@@ -1,6 +1,7 @@
 package com.babisamas.movierama.dto;
 
 import com.babisamas.movierama.model.Movie;
+import com.babisamas.movierama.model.VoteType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -24,7 +25,9 @@ public class MovieDTO {
     private int numberOfLikes;
     private int numberOfHates;
 
-    public MovieDTO(Movie movie, long numberOfLikes, long numberOfHates, String userName) {
+    private VoteType loggedUserVote;
+
+    public MovieDTO(Movie movie, long numberOfLikes, long numberOfHates, String userName, VoteType loggedUserVote) {
         this.id = movie.getId();
         this.title = movie.getTitle();
         this.description = movie.getDescription();
@@ -32,5 +35,6 @@ public class MovieDTO {
         this.userName = userName;
         this.numberOfLikes = (int) numberOfLikes;
         this.numberOfHates = (int) numberOfHates;
+        this.loggedUserVote = loggedUserVote;
     }
 }

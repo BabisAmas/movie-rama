@@ -46,4 +46,12 @@ public class UserService {
         return userRepository.findByUsernameOrEmail(username, username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
     }
+    public Long getLoggedInUserId() {
+        try {
+            User loggedInUser = getLoggedInUser();
+            return loggedInUser.getId();
+        } catch (UsernameNotFoundException e) {
+            return null;
+        }
+    }
 }

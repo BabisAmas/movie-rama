@@ -35,20 +35,22 @@ public class MovieService {
     }
 
     public Page<MovieDTO> getSortedMovies(Pageable pageable, String sortType) {
+        Long loggedUserId = userService.getLoggedInUserId();
+
         Page<Movie> moviesPage;
         switch (sortType) {
             case "mostLikes":
-                return movieRepository.findMoviesWithLikesHatesAndUserSortedByVoteType(VoteType.LIKE, pageable);
+                return movieRepository.findMoviesWithLikesHatesAndUserSortedByVoteType(VoteType.LIKE, pageable, loggedUserId);
             case "mostHates":
-                return movieRepository.findMoviesWithLikesHatesAndUserSortedByVoteType(VoteType.HATE, pageable);
+                return movieRepository.findMoviesWithLikesHatesAndUserSortedByVoteType(VoteType.HATE, pageable, loggedUserId);
             case "addedDateAsc":
                 pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("dateAdded").ascending());
-                break;
+                return movieRepository.findMoviesWithLikesHatesAndUserSortedByAddedDate(pageable, loggedUserId);
             case "addedDateDesc":
                 pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("dateAdded").descending());
-                break;
+                return movieRepository.findMoviesWithLikesHatesAndUserSortedByAddedDate(pageable, loggedUserId);
             default:
-                throw new IllegalStateException("Unexpected value: " + sortType);
+                break;
         }
 
         moviesPage = movieRepository.findAll(pageable);
