@@ -3,10 +3,40 @@
     <h1 class="header-title">MovieRama</h1>
   </div>
   <div class="p-toolbar-group-right">
-    <button *ngIf="!isLoggedIn" pButton type="button" label="Log in" class="ui-button-rounded ui-button-spaced" (click)="toggleModal()"></button>
-    <button *ngIf="!isLoggedIn" pButton type="button" label="Sign up" class="ui-button-rounded ui-button-spaced" (click)="toggleModal()"></button>
-    <button *ngIf="isLoggedIn" pButton type="button" label="Logout" class="ui-button-rounded ui-button-spaced" (click)="logout()"></button>
+    <button
+      *ngIf="!isLoggedIn"
+      pButton
+      type="button"
+      label="Log in"
+      class="ui-button-rounded ui-button-spaced"
+      (click)="toggleLoginModal()"
+    ></button>
+    <button
+      *ngIf="!isLoggedIn"
+      pButton
+      type="button"
+      label="Sign up"
+      class="ui-button-rounded ui-button-spaced"
+      (click)="toggleRegistrationModal()"
+    ></button>
+    <button
+      *ngIf="isLoggedIn"
+      pButton
+      type="button"
+      label="Logout"
+      class="ui-button-rounded ui-button-spaced"
+      (click)="logout()"
+    ></button>
   </div>
 </p-toolbar>
 
-<app-login-modal *ngIf="showModal" (closeModalEvent)="toggleModal()"></app-login-modal>
+<app-login-modal
+  *ngIf="showLoginModal"
+  (closeModalEvent)="toggleLoginModal()"
+></app-login-modal>
+
+<app-registration-modal
+  *ngIf="showRegistrationModal"
+  (closeModalEvent)="toggleRegistrationModal()"
+  (registrationSuccess)="toggleRegistrationModal()"
+></app-registration-modal>

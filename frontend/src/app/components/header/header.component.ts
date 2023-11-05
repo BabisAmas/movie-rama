@@ -8,7 +8,8 @@ import { AuthService } from 'src/app/services/auth.service';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent {
-  showModal = false;
+  showLoginModal = false;
+  showRegistrationModal = false;
 
   constructor(private authService: AuthService, private messageService: MessageService) {}
 
@@ -26,7 +27,11 @@ export class HeaderComponent {
     });
   }
 
-  toggleModal() {
-    this.showModal = !this.showModal;
+  toggleLoginModal() {
+    this.showLoginModal = !this.showLoginModal;
+  }
+
+  toggleRegistrationModal() {
+    this.showRegistrationModal = !this.showRegistrationModal;
   }
 }

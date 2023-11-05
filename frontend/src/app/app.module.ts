@@ -19,6 +19,7 @@ import { MessageService } from 'primeng/api';
 import { DialogModule } from 'primeng/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToolbarModule } from 'primeng/toolbar';
+import { RegistrationModalComponent } from './components/registration-modal/registration-modal.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { ToolbarModule } from 'primeng/toolbar';
     MovieCardComponent,
     SortComponent,
     UserProfileComponent,
-    LoginModalComponent
+    LoginModalComponent,
+    RegistrationModalComponent
   ],
   imports: [
     BrowserModule,

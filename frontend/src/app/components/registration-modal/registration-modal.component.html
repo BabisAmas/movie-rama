@@ -1,0 +1,42 @@
+<p-dialog [(visible)]="display" [modal]="true" header="Register" [closable]="true" [draggable]="false" [dismissableMask]="false" [resizable]="false">
+    <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+      <div class="p-fluid">
+        <div class="p-field">
+          <label for="username">Username</label>
+          <input id="username" type="text" pInputText formControlName="username">
+          <small *ngIf="f['username'].touched && hasError('username', 'required')" class="p-error">Username is required.</small>
+          <small *ngIf="f['username'].touched && hasError('username', 'minlength')" class="p-error">Username must be at least 5 characters long.</small>
+          <small *ngIf="f['username'].touched && hasError('username', 'maxlength')" class="p-error">Username cannot be more than 50 characters long.</small>
+        </div>
+        <div class="p-field">
+          <label for="email">Email</label>
+          <input id="email" type="text" pInputText formControlName="email">
+          <small *ngIf="f['email'].touched && hasError('email', 'required')" class="p-error">Email is required.</small>
+          <small *ngIf="f['email'].touched && hasError('email', 'email')" class="p-error">Please enter a valid email.</small>
+        </div>
+        <div class="p-field">
+            <label for="password">Password</label>
+            <input id="password" type="password" pInputText formControlName="password">
+            <small *ngIf="f['password'].touched && hasError('password', 'required')" class="p-error">Password is required.</small>
+            <small *ngIf="f['password'].touched && hasError('password', 'minlength')" class="p-error">Password must be at least 8 characters long.</small>
+            <small *ngIf="f['password'].touched && hasError('password', 'passwordComplexity')" class="p-error">Password must have at least one uppercase letter, one symbol, and one number.</small>
+          </div>
+          
+        <div class="p-field">
+          <label for="firstname">First Name</label>
+          <input id="firstname" type="text" pInputText formControlName="firstname">
+          <small *ngIf="f['firstname'].touched && hasError('firstname', 'required')" class="p-error">First Name is required.</small>
+          <small *ngIf="f['firstname'].touched && hasError('firstname', 'maxlength')" class="p-error">First Name cannot be more than 100 characters long.</small>
+        </div>
+        <div class="p-field">
+          <label for="lastname">Last Name</label>
+          <input id="lastname" type="text" pInputText formControlName="lastname">
+          <small *ngIf="f['lastname'].touched && hasError('lastname', 'required')" class="p-error">Last Name is required.</small>
+          <small *ngIf="f['lastname'].touched && hasError('lastname', 'maxlength')" class="p-error">Last Name cannot be more than 100 characters long.</small>
+        </div>
+        <div class="p-field">
+          <button type="submit" pButton label="Register" [disabled]="registrationForm.invalid"></button>
+        </div>
+      </div>
+    </form>
+  </p-dialog>
