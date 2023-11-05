@@ -1,0 +1,47 @@
+.movie-card {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.movie-card .p-card-title {
+  color: #000;
+  font-weight: bold;
+}
+
+.movie-card .text-muted {
+  color: #6c757d;
+}
+
+.movie-card .like-dislike-section {
+  display: flex;
+  align-items: center;
+  font-size: 0.9em;
+  color: #555;
+}
+
+.movie-card .pi {
+  font-size: 1.2em;
+  cursor: pointer;
+  margin-right: .2em;
+}
+
+.movie-card .likes,
+.movie-card .dislikes {
+  margin-right: 1rem;
+}
+
+.movie-card .pi-thumbs-up.liked {
+  color: #007bff;
+}
+
+.movie-card .pi-thumbs-down.disliked {
+  color: #dc3545;
+}
+
+.movie-card .pi:hover {
+  opacity: 0.7;
+}

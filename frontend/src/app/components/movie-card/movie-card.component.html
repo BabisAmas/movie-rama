@@ -1,1 +1,15 @@
-<p>movie-card works!</p>
+<div class="p-card movie-card">
+  <div class="p-card-body">
+    <div class="p-card-title">{{ movie.title }}</div>
+    <div class="text-muted">
+      Posted {{ movie.dateAdded | timeAgo }} by {{ movie.userName }}
+    </div>
+    <div class="p-card-content">{{ movie.description }}</div>
+    <div class="like-dislike-section">
+      <i class="pi pi-thumbs-up"></i>
+      <span class="likes">{{ movie.numberOfLikes }} likes</span>
+      <i class="pi pi-thumbs-down"></i>
+      <span class="dislikes">{{ movie.numberOfHates }} hates</span>
+    </div>
+  </div>
+</div>
