@@ -44,6 +44,7 @@ import { ToolbarModule } from 'primeng/toolbar';
     BrowserAnimationsModule
   ],
   providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     MessageService
   ],
   bootstrap: [AppComponent]
