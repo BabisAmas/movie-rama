@@ -20,6 +20,8 @@ import { DialogModule } from 'primeng/dialog';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToolbarModule } from 'primeng/toolbar';
 import { RegistrationModalComponent } from './components/registration-modal/registration-modal.component';
+import { DropdownModule } from 'primeng/dropdown';
+import { TimeAgoPipe } from './shared/pipes/time-ago.pipe';
 
 @NgModule({
   declarations: [
@@ -30,7 +32,8 @@ import { RegistrationModalComponent } from './components/registration-modal/regi
     SortComponent,
     UserProfileComponent,
     LoginModalComponent,
-    RegistrationModalComponent
+    RegistrationModalComponent,
+    TimeAgoPipe
   ],
   imports: [
     BrowserModule,
@@ -43,6 +46,7 @@ import { RegistrationModalComponent } from './components/registration-modal/regi
     ButtonModule,
     ToastModule,
     ToolbarModule,
+    DropdownModule,
     BrowserAnimationsModule
   ],
   providers: [
