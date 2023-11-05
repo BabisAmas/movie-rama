@@ -1,1 +1,8 @@
-<p>movie-list works!</p>
+<div class="movie-list">
+  <app-sort (onSort)="onSortChange($event)"></app-sort>
+  <div class="p-grid">
+    <div class="p-col" *ngFor="let movie of movies">
+      <app-movie-card [movie]="movie"></app-movie-card>
+    </div>
+  </div>
+</div>
