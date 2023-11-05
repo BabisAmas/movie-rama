@@ -3,14 +3,14 @@ package com.babisamas.movierama.service;
 import com.babisamas.movierama.dto.MovieDTO;
 import com.babisamas.movierama.model.Movie;
 import com.babisamas.movierama.model.Vote;
+import com.babisamas.movierama.model.VoteType;
 import com.babisamas.movierama.repository.MovieRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class MovieService {
@@ -29,13 +29,34 @@ public class MovieService {
         return convertToDto(savedMovie);
     }
 
-    public List<MovieDTO> getAllMovies() {
-        return movieRepository.findAll().stream().map(this::convertToDto).collect(Collectors.toList());
-    }
-
     public Movie getMovieById(Long movieId) {
         return movieRepository.findById(movieId)
                 .orElseThrow(() -> new EntityNotFoundException("Movie not found with id: " + movieId));
+    }
+
+    public Page<MovieDTO> getSortedMovies(Pageable pageable, String sortType) {
+        Page<Movie> moviesPage;
+        switch (sortType) {
+            case "mostLikes":
+                return movieRepository.findMoviesWithLikesHatesAndUserSortedByVoteType(VoteType.LIKE, pageable);
+            case "mostHates":
+                return movieRepository.findMoviesWithLikesHatesAndUserSortedByVoteType(VoteType.HATE, pageable);
+            case "addedDateAsc":
+                pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("dateAdded").ascending());
+                break;
+            case "addedDateDesc":
+                pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("dateAdded").descending());
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + sortType);
+        }
+
+        moviesPage = movieRepository.findAll(pageable);
+        List<MovieDTO> movieDTOs = moviesPage.getContent().stream()
+                .map(this::convertToDto)
+                .toList();
+
+        return new PageImpl<>(movieDTOs, pageable, moviesPage.getTotalElements());
     }
 
     private Movie convertToEntity(MovieDTO movieDTO) {
