@@ -1,1 +1,11 @@
-<p>sort works!</p>
+<div class="sort-component">
+  <p-dropdown
+    [options]="sortOptions"
+    (onChange)="onSortChange($event)"
+    placeholder="Sort by"
+    [showClear]="true"
+    optionLabel="label"
+    [style]="{ width: '20%' }"
+  >
+  </p-dropdown>
+</div>
