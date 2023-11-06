@@ -20,4 +20,8 @@ export class MovieService {
 
     return this.http.get<Page<Movie>>(this.apiUrl, { params });
   }
+
+  createMovie(movie: Movie): Observable<Movie> {
+    return this.http.post<Movie>(this.apiUrl, movie);
+  }
 }

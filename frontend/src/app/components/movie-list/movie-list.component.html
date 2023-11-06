@@ -1,5 +1,21 @@
-<div class="movie-list">
+<div class="movie-list-header">
   <app-sort (onSort)="onSortChange($event)"></app-sort>
+  <app-movie-create-modal
+    [(displayMovieCreate)]="showCreateMovieModal"
+    (displayMovieCreateChange)="showCreateMovieModal = $event"
+    (movieCreated)="onMovieCreated()"
+    (close)="onCloseModal()"
+  ></app-movie-create-modal>
+  <button
+    *ngIf="isLoggedIn"
+    class="ui-button ui-button-success add-movie"
+    (click)="onCreateMovieClick()"
+  >
+    <i class="pi pi-plus"></i> Add Movie
+  </button>
+</div>
+
+<div class="movie-list">
   <div class="p-grid">
     <div class="p-col" *ngFor="let movie of movies">
       <app-movie-card [movie]="movie"></app-movie-card>

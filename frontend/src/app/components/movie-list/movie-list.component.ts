@@ -1,4 +1,6 @@
 import { Component, HostListener } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { AuthService } from 'src/app/services/auth.service';
 import { MovieService } from 'src/app/services/movie.service';
 
 @Component({
@@ -15,12 +17,25 @@ export class MovieListComponent {
   notEmptyPost = true;
   notscrolly = true;
   private initialSortDone = false;
+  showCreateMovieModal: boolean = false;
+  private authSubscription!: Subscription;
 
-  constructor(private movieService: MovieService) {}
+  constructor(private movieService: MovieService, private authService: AuthService) {}
 
   ngOnInit(): void {
     this.loadInitMovies();
     this.initialSortDone = true;
+    this.authSubscription = this.authService.currentUser.subscribe(user => {
+      if (user) {
+        this.onLogin();
+      } else {
+        this.onLogout();
+      }
+    });
+  }
+
+  get isLoggedIn() {
+    return this.authService.isLoggedIn();
   }
 
   loadInitMovies(): void {
@@ -69,5 +84,29 @@ export class MovieListComponent {
           this.notscrolly = true;
         });
     }
+  }
+
+  private onLogin() {
+    this.loadInitMovies();
+  }
+
+  private onLogout() {
+    this.loadInitMovies();
+  }
+
+  onMovieCreated(): void {
+    this.loadInitMovies();
+  }
+  
+  onCreateMovieClick(): void {
+    this.showCreateMovieModal = true;
+  }
+
+  onCloseModal(): void {
+    this.showCreateMovieModal = false;
+  }
+
+  ngOnDestroy() {
+    this.authSubscription.unsubscribe();
   }
 }

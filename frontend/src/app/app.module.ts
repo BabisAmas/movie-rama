@@ -22,6 +22,7 @@ import { ToolbarModule } from 'primeng/toolbar';
 import { RegistrationModalComponent } from './components/registration-modal/registration-modal.component';
 import { DropdownModule } from 'primeng/dropdown';
 import { TimeAgoPipe } from './shared/pipes/time-ago.pipe';
+import { MovieCreateModalComponent } from './components/movie-create-modal/movie-create-modal.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { TimeAgoPipe } from './shared/pipes/time-ago.pipe';
     UserProfileComponent,
     LoginModalComponent,
     RegistrationModalComponent,
-    TimeAgoPipe
+    TimeAgoPipe,
+    MovieCreateModalComponent
   ],
   imports: [
     BrowserModule,

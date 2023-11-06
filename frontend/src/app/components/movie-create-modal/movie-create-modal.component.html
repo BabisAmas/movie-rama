@@ -1,0 +1,31 @@
+<p-dialog 
+  [(visible)]="displayMovieCreate" 
+  [modal]="true" 
+  header="Create Movie" 
+  [closable]="true" 
+  [draggable]="false" 
+  [dismissableMask]="false" 
+  [resizable]="false" 
+  (onHide)="modalClose()"
+>
+  <form [formGroup]="movieForm" (ngSubmit)="onCreateMovie()">
+    <div class="p-fluid">
+      <div class="p-field">
+        <label for="title">Title</label>
+        <input id="title" type="text" pInputText formControlName="title">
+        <small *ngIf="movieForm.get('title')?.touched && movieForm.get('title')?.errors?.['required']" class="p-error">Title is required.</small>
+        <small *ngIf="movieForm.get('title')?.touched && movieForm.get('title')?.errors?.['minlength']" class="p-error">Title must be at least 1 character long.</small>
+        <small *ngIf="movieForm.get('title')?.touched && movieForm.get('title')?.errors?.['maxlength']" class="p-error">Title cannot be more than 255 characters long.</small>
+        <small *ngIf="movieForm.get('title')?.touched && movieForm.get('title')?.errors?.['pattern']" class="p-error">Title cannot be blank.</small>
+      </div>
+      <div class="p-field">
+        <label for="description">Description</label>
+        <textarea id="description" type="text" pInputTextarea formControlName="description" rows="5"></textarea>
+        <small *ngIf="movieForm.get('description')?.touched && movieForm.get('description')?.errors?.['maxlength']" class="p-error">Description cannot be more than 1000 characters long.</small>
+      </div>
+      <div class="p-field">
+        <button type="submit" pButton label="Create Movie" [disabled]="movieForm.invalid"></button>
+      </div>
+    </div>
+  </form>
+</p-dialog>
