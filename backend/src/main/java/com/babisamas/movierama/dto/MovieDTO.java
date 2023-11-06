@@ -27,7 +27,9 @@ public class MovieDTO {
 
     private VoteType loggedUserVote;
 
-    public MovieDTO(Movie movie, long numberOfLikes, long numberOfHates, String userName, VoteType loggedUserVote) {
+    private boolean isLoggedUserAuthor;
+
+    public MovieDTO(Movie movie, long numberOfLikes, long numberOfHates, String userName, boolean isLoggedUserAuthor, VoteType loggedUserVote) {
         this.id = movie.getId();
         this.title = movie.getTitle();
         this.description = movie.getDescription();
@@ -36,5 +38,6 @@ public class MovieDTO {
         this.numberOfLikes = (int) numberOfLikes;
         this.numberOfHates = (int) numberOfHates;
         this.loggedUserVote = loggedUserVote;
+        this.isLoggedUserAuthor = isLoggedUserAuthor;
     }
 }

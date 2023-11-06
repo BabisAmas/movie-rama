@@ -17,6 +17,7 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
             "(SELECT COUNT(v1) FROM Vote v1 WHERE v1.movie = m AND v1.type = com.babisamas.movierama.model.VoteType.LIKE), " +
             "(SELECT COUNT(v2) FROM Vote v2 WHERE v2.movie = m AND v2.type = com.babisamas.movierama.model.VoteType.HATE), " +
             "CONCAT(u.firstname, ' ', u.lastname), " +
+            "CASE WHEN u.id = :userId THEN true ELSE false END, " +
             "CASE WHEN :userId IS NOT NULL THEN " +
             "(SELECT v3.type FROM Vote v3 WHERE v3.movie = m AND v3.user.id = :userId) " +
             "ELSE null END) " +
@@ -32,6 +33,7 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
             "(SELECT COUNT(v1) FROM Vote v1 WHERE v1.movie = m AND v1.type = com.babisamas.movierama.model.VoteType.LIKE), " +
             "(SELECT COUNT(v2) FROM Vote v2 WHERE v2.movie = m AND v2.type = com.babisamas.movierama.model.VoteType.HATE), " +
             "CONCAT(u.firstname, ' ', u.lastname), " +
+            "CASE WHEN u.id = :userId THEN true ELSE false END, " +
             "CASE WHEN :userId IS NOT NULL THEN " +
             "(SELECT v3.type FROM Vote v3 WHERE v3.movie = m AND v3.user.id = :userId) " +
             "ELSE null END) " +

@@ -39,6 +39,14 @@ public class VoteService {
         return convertToDto(savedVote);
     }
 
+    public void removeVote(Long movieId) {
+        User currentUser = userService.getLoggedInUser();
+        Movie movie = movieService.getMovieById(movieId);
+
+        voteRepository.findByUserAndMovie(currentUser, movie)
+                .ifPresent(voteRepository::delete);
+    }
+
     private Vote createNewVote(Movie movie, User user, VoteType voteType) {
         Vote newVote = new Vote();
         newVote.setMovie(movie);

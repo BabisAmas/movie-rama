@@ -5,10 +5,7 @@ import com.babisamas.movierama.model.VoteType;
 import com.babisamas.movierama.service.VoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/votes")
@@ -25,5 +22,11 @@ public class VoteController {
     public ResponseEntity<VoteDTO> vote(@RequestParam Long movieId, @RequestParam VoteType voteType) {
         VoteDTO vote = voteService.vote(movieId, voteType);
         return ResponseEntity.ok(vote);
+    }
+
+    @DeleteMapping("/vote")
+    public ResponseEntity<Void> removeVote(@RequestParam Long movieId) {
+        voteService.removeVote(movieId);
+        return ResponseEntity.ok().build();
     }
 }

@@ -5,4 +5,6 @@ export class Movie {
     dateAdded!: Date;
     numberOfLikes!: number;
     numberOfHates!: number;
+    loggedUserVote!: string;
+    loggedUserAuthor!: boolean;
 }

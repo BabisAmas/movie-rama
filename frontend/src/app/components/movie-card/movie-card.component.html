@@ -6,10 +6,24 @@
     </div>
     <div class="p-card-content">{{ movie.description }}</div>
     <div class="like-dislike-section">
-      <i class="pi pi-thumbs-up"></i>
+      <i
+        class="pi pi-thumbs-up"
+        [ngClass]="{ liked: hasVoted('LIKE') }"
+        (click)="likeMovie(movie.id)"
+      ></i>
       <span class="likes">{{ movie.numberOfLikes }} likes</span>
-      <i class="pi pi-thumbs-down"></i>
+      <i
+        class="pi pi-thumbs-down"
+        [ngClass]="{ disliked: hasVoted('HATE') }"
+        (click)="dislikeMovie(movie.id)"
+      ></i>
       <span class="dislikes">{{ movie.numberOfHates }} hates</span>
+      <!-- Optionally, add a button or icon for removing a vote -->
+      <i
+        *ngIf="movie.loggedUserVote"
+        class="pi pi-times"
+        (click)="removeVote(movie.id)"
+      ></i>
     </div>
   </div>
 </div>
