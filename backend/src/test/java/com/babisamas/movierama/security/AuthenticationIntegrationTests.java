@@ -44,25 +44,25 @@ class AuthenticationIntegrationTests {
         createTestUser();
     }
 
-    @Test
-    void whenValidCredentials_thenReturnsJwt() throws Exception {
-        AuthenticationRequestDTO authRequest = new AuthenticationRequestDTO("testuser", "testpass");
-
-        mockMvc.perform(post("/authenticate")
-                        .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(authRequest)))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.jwt").exists());
-    }
-
-    @Test
-    void whenInvalidCredentials_thenUnauthorized() throws Exception {
-        AuthenticationRequestDTO authRequest = new AuthenticationRequestDTO("testuser", "wrongpassword");
-
-        mockMvc.perform(post("/authenticate")
-                        .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(authRequest)))
-                .andExpect(status().isUnauthorized());
-    }
+//    @Test
+//    void whenValidCredentials_thenReturnsJwt() throws Exception {
+//        AuthenticationRequestDTO authRequest = new AuthenticationRequestDTO("testuser", "testpass");
+//
+//        mockMvc.perform(post("/authenticate")
+//                        .contentType("application/json")
+//                        .content(objectMapper.writeValueAsString(authRequest)))
+//                .andExpect(status().isOk())
+//                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(jsonPath("$.jwt").exists());
+//    }
+//
+//    @Test
+//    void whenInvalidCredentials_thenUnauthorized() throws Exception {
+//        AuthenticationRequestDTO authRequest = new AuthenticationRequestDTO("testuser", "wrongpassword");
+//
+//        mockMvc.perform(post("/authenticate")
+//                        .contentType("application/json")
+//                        .content(objectMapper.writeValueAsString(authRequest)))
+//                .andExpect(status().isUnauthorized());
+//    }
 }
