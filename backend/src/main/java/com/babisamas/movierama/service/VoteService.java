@@ -1,13 +1,15 @@
 package com.babisamas.movierama.service;
 
-import com.babisamas.movierama.dto.VoteDTO;
 import com.babisamas.movierama.model.Movie;
 import com.babisamas.movierama.model.User;
 import com.babisamas.movierama.model.Vote;
 import com.babisamas.movierama.model.VoteType;
+import com.babisamas.movierama.repository.MovieRepository;
 import com.babisamas.movierama.repository.VoteRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -16,59 +18,78 @@ public class VoteService {
 
     private final VoteRepository voteRepository;
     private final UserService userService;
-    private final MovieService movieService;
+    private final MovieRepository movieRepository;
 
     @Autowired
-    public VoteService(VoteRepository voteRepository, UserService userService, MovieService movieService) {
+    public VoteService(
+            VoteRepository voteRepository,
+            UserService userService,
+            MovieRepository movieRepository) {
         this.voteRepository = voteRepository;
         this.userService = userService;
-        this.movieService = movieService;
+        this.movieRepository = movieRepository;
     }
 
-    public VoteDTO vote(Long movieId, VoteType voteType) {
+    @Transactional
+    public void castVote(Long movieId, VoteType voteType) {
         User currentUser = userService.getLoggedInUser();
-        Movie movie = movieService.getMovieById(movieId);
-
-        if (movie.getUser().equals(currentUser)) {
-            throw new IllegalArgumentException("Users cannot vote for their own movies");
-        }
+        Movie movie = movieRepository.findById(movieId)
+                .orElseThrow(() -> new EntityNotFoundException("Movie not found with ID: " + movieId));
 
         Optional<Vote> existingVote = voteRepository.findByUserAndMovie(currentUser, movie);
-        Vote savedVote = existingVote.map(vote -> updateVote(vote, voteType))
-                .orElseGet(() -> createNewVote(movie, currentUser, voteType));
-        return convertToDto(savedVote);
+
+        if (existingVote.isPresent()) {
+            updateExistingVote(existingVote.get(), voteType, movie);
+        } else {
+            createAndSaveNewVote(movie, currentUser, voteType);
+        }
     }
 
-    public void removeVote(Long movieId) {
-        User currentUser = userService.getLoggedInUser();
-        Movie movie = movieService.getMovieById(movieId);
-
-        voteRepository.findByUserAndMovie(currentUser, movie)
-                .ifPresent(voteRepository::delete);
-    }
-
-    private Vote createNewVote(Movie movie, User user, VoteType voteType) {
+    private void createAndSaveNewVote(Movie movie, User user, VoteType voteType) {
         Vote newVote = new Vote();
         newVote.setMovie(movie);
         newVote.setUser(user);
         newVote.setType(voteType);
-        return voteRepository.save(newVote);
+        voteRepository.save(newVote);
+
+        incrementVoteCounter(movie, voteType);
     }
 
-    private Vote updateVote(Vote existingVote, VoteType newType) {
-        if (!existingVote.getType().equals(newType)) {
-            existingVote.setType(newType);
-            voteRepository.save(existingVote);
+    private void updateExistingVote(Vote vote, VoteType newType, Movie movie) {
+        if (vote.getType() != newType) {
+            decrementVoteCounter(movie, vote.getType());
+            incrementVoteCounter(movie, newType);
+            vote.setType(newType);
+            voteRepository.save(vote);
         }
-        return existingVote;
     }
 
-    public VoteDTO convertToDto(Vote vote) {
-        VoteDTO dto = new VoteDTO();
-        dto.setId(vote.getId());
-        dto.setType(vote.getType());
-        dto.setUserId(vote.getUser().getId());
-        dto.setMovieId(vote.getMovie().getId());
-        return dto;
+    private void incrementVoteCounter(Movie movie, VoteType voteType) {
+        if (voteType == VoteType.LIKE) {
+            movie.getMovieCounter().incrementLike();
+        } else if (voteType == VoteType.HATE) {
+            movie.getMovieCounter().incrementHate();
+        }
+    }
+
+    private void decrementVoteCounter(Movie movie, VoteType voteType) {
+        if (voteType == VoteType.LIKE) {
+            movie.getMovieCounter().decrementLike();
+        } else if (voteType == VoteType.HATE) {
+            movie.getMovieCounter().decrementHate();
+        }
+    }
+
+    public void removeVote(Long movieId) {
+        User currentUser = userService.getLoggedInUser();
+        if (currentUser == null) {
+            throw new IllegalStateException("No authenticated user found");
+        }
+
+        Movie movie = movieRepository.findById(movieId)
+                .orElseThrow(() -> new EntityNotFoundException("Movie not found with ID: " + movieId));
+
+        voteRepository.findByUserAndMovie(currentUser, movie)
+                .ifPresent(voteRepository::delete);
     }
 }

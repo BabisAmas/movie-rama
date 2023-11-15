@@ -36,4 +36,15 @@ public class Movie {
 
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
     private List<Vote> votes = new ArrayList<>();
+
+    @OneToOne(mappedBy = "movie", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @PrimaryKeyJoinColumn
+    private MovieCounter movieCounter;
+
+    @PostPersist
+    public void initializeCounter() {
+        if (movieCounter == null) {
+            movieCounter = new MovieCounter(this);
+        }
+    }
 }

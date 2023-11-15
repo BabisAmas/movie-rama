@@ -1,6 +1,5 @@
 package com.babisamas.movierama.controller;
 
-import com.babisamas.movierama.dto.VoteDTO;
 import com.babisamas.movierama.model.VoteType;
 import com.babisamas.movierama.service.VoteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +18,9 @@ public class VoteController {
     }
 
     @PostMapping("/vote")
-    public ResponseEntity<VoteDTO> vote(@RequestParam Long movieId, @RequestParam VoteType voteType) {
-        VoteDTO vote = voteService.vote(movieId, voteType);
-        return ResponseEntity.ok(vote);
+    public ResponseEntity<Void> vote(@RequestParam Long movieId, @RequestParam VoteType voteType) {
+        voteService.castVote(movieId, voteType);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/vote")
