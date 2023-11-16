@@ -3,14 +3,14 @@ package com.babisamas.movierama.service;
 import com.babisamas.movierama.dto.MovieDTO;
 import com.babisamas.movierama.model.Movie;
 import com.babisamas.movierama.model.Vote;
-import com.babisamas.movierama.model.VoteType;
 import com.babisamas.movierama.repository.MovieRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class MovieService {
@@ -36,29 +36,19 @@ public class MovieService {
 
     public Page<MovieDTO> getSortedMovies(Pageable pageable, String sortType) {
         Long loggedUserId = userService.getLoggedInUserId();
+        Pageable sortedPageable = createSortedPageable(pageable, sortType);
 
-        Page<Movie> moviesPage;
-        switch (sortType) {
-            case "mostLikes":
-                return movieRepository.findMoviesWithLikesHatesAndUserSortedByVoteType(VoteType.LIKE, pageable, loggedUserId);
-            case "mostHates":
-                return movieRepository.findMoviesWithLikesHatesAndUserSortedByVoteType(VoteType.HATE, pageable, loggedUserId);
-            case "addedDateAsc":
-                pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("dateAdded").ascending());
-                return movieRepository.findMoviesWithLikesHatesAndUserSortedByAddedDate(pageable, loggedUserId);
-            case "addedDateDesc":
-                pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("dateAdded").descending());
-                return movieRepository.findMoviesWithLikesHatesAndUserSortedByAddedDate(pageable, loggedUserId);
-            default:
-                break;
-        }
+        return movieRepository.findMoviesWithLikesHatesAndUser(sortedPageable, loggedUserId);
+    }
 
-        moviesPage = movieRepository.findAll(pageable);
-        List<MovieDTO> movieDTOs = moviesPage.getContent().stream()
-                .map(this::convertToDto)
-                .toList();
-
-        return new PageImpl<>(movieDTOs, pageable, moviesPage.getTotalElements());
+    private Pageable createSortedPageable(Pageable pageable, String sortType) {
+        Sort sort = switch (sortType) {
+            case "mostLikes" -> Sort.by("movieCounter.likeCount").descending();
+            case "mostHates" -> Sort.by("movieCounter.hateCount").descending();
+            case "addedDateAsc" -> Sort.by("dateAdded").ascending();
+            default -> Sort.by("dateAdded").descending();
+        };
+        return PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
     }
 
     private Movie convertToEntity(MovieDTO movieDTO) {
