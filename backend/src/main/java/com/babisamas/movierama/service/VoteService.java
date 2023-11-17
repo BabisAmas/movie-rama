@@ -1,6 +1,7 @@
 package com.babisamas.movierama.service;
 
 import com.babisamas.movierama.exception.CustomRetryLimitExceededException;
+import com.babisamas.movierama.exception.UserCannotVoteOnOwnMovieException;
 import com.babisamas.movierama.model.Movie;
 import com.babisamas.movierama.model.User;
 import com.babisamas.movierama.model.Vote;
@@ -42,6 +43,10 @@ public class VoteService {
                 User currentUser = userService.getLoggedInUser();
                 Movie movie = movieRepository.findById(movieId)
                         .orElseThrow(() -> new EntityNotFoundException("Movie not found with ID: " + movieId));
+
+                if (currentUser.getId().equals(movie.getUser().getId())) {
+                    throw new UserCannotVoteOnOwnMovieException("Users cannot vote on their own movies.");
+                }
 
                 Optional<Vote> existingVote = voteRepository.findByUserAndMovie(currentUser, movie);
 
