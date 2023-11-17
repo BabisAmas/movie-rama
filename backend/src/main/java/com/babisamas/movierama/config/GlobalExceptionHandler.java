@@ -1,9 +1,11 @@
 package com.babisamas.movierama.config;
 
+import com.babisamas.movierama.exception.CustomRetryLimitExceededException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -57,5 +59,12 @@ public class GlobalExceptionHandler {
                 "Validation error",
                 errors
         );
+    }
+
+    @ExceptionHandler(CustomRetryLimitExceededException.class)
+    public ResponseEntity<String> handleCustomException(CustomRetryLimitExceededException ex) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ex.getMessage());
     }
 }

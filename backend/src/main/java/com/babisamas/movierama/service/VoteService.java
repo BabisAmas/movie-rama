@@ -1,5 +1,6 @@
 package com.babisamas.movierama.service;
 
+import com.babisamas.movierama.exception.CustomRetryLimitExceededException;
 import com.babisamas.movierama.model.Movie;
 import com.babisamas.movierama.model.User;
 import com.babisamas.movierama.model.Vote;
@@ -7,6 +8,7 @@ import com.babisamas.movierama.model.VoteType;
 import com.babisamas.movierama.repository.MovieRepository;
 import com.babisamas.movierama.repository.VoteRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.OptimisticLockException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,16 +34,38 @@ public class VoteService {
 
     @Transactional
     public void castVote(Long movieId, VoteType voteType) {
-        User currentUser = userService.getLoggedInUser();
-        Movie movie = movieRepository.findById(movieId)
-                .orElseThrow(() -> new EntityNotFoundException("Movie not found with ID: " + movieId));
+        int retryCount = 0;
+        int maxRetries = 3;
 
-        Optional<Vote> existingVote = voteRepository.findByUserAndMovie(currentUser, movie);
+        while (true) {
+            try {
+                User currentUser = userService.getLoggedInUser();
+                Movie movie = movieRepository.findById(movieId)
+                        .orElseThrow(() -> new EntityNotFoundException("Movie not found with ID: " + movieId));
 
-        if (existingVote.isPresent()) {
-            updateExistingVote(existingVote.get(), voteType, movie);
-        } else {
-            createAndSaveNewVote(movie, currentUser, voteType);
+                Optional<Vote> existingVote = voteRepository.findByUserAndMovie(currentUser, movie);
+
+                if (existingVote.isPresent()) {
+                    updateExistingVote(existingVote.get(), voteType, movie);
+                } else {
+                    createAndSaveNewVote(movie, currentUser, voteType);
+                }
+
+                break;
+            } catch (OptimisticLockException ole) {
+                if (++retryCount >= maxRetries) {
+                    throw new CustomRetryLimitExceededException("Your vote could not be processed due to concurrent updates. Please try again.");
+                }
+                sleepBriefly();
+            }
+        }
+    }
+
+    private void sleepBriefly() {
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
     }
 

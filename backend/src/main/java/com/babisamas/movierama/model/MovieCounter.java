@@ -21,6 +21,9 @@ public class MovieCounter {
     @Min(0)
     private int hateCount = 0;
 
+    @Version
+    private Long version;
+
     @OneToOne
     @MapsId
     @JoinColumn(name = "id")
